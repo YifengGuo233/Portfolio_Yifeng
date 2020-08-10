@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" type="text/css" href="index.css">
+    <title></title>
+  </head>
+  <body>
+
+    <nav class="navbar-expand-lg navbar navbar-dark bg-dark">
+       <span class="navbar-brand pointer" href="#">WeTalk|微话</span>
+       <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
+       <span class="navbar-toggler-icon"></span>
+       </button>
+       <div class="collapse navbar-collapse" id="navbarNavDropdown">
+          <ul class="navbar-nav">
+             <li class="nav-item active">
+                <span class="nav-link pointer" href="#">首页</span>
+             </li>
+          </ul>
+          <ul id="profile_section" class="navbar-nav ml-auto">
+          <script>
+            var user = localStorage.getItem("user")
+            //console.log(user)
+            if(user){
+              document.write(`
+                <li class="nav-item">
+                   <span class="nav-link pointer" id="profile">我的</span>
+                </li>
+                <li class="nav-item">
+                   <span class="nav-link pointer" id="logout">退出登录</span>
+                </li>`)
+            }
+            else{
+              document.write(`
+                <li class="nav-item">
+                   <a class="nav-link" href="login.html" data-toggle="modal" data-target="#loginModal">登录</a>
+                </li>
+                <li class="nav-item">
+                   <a class="nav-link" href="#" data-toggle="modal" data-target="#signInModal">注册</a>
+                </li>`)
+            }
+          </script>
+        </ul>
+       </div>
+    </nav>
+
+
+    <!-- Login Modal -->
+    <div class="modal fade" id="loginModal" tabindex="-1" aria-labelledby="loginModalLabel" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="loginModalLabel">登录界面</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <span id="login_message"></span>
+            <form>
+              <div class="form-group">
+                <label for="username">用户名</label>
+                <input type="email" class="form-control" id="login_username" placeholder="随便输入">
+                <label for="password">密码</label>
+                <input type="password" class="form-control" id="login_password" placeholder="随便输入">
+              </div>
+            </form>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">关闭</button>
+            <button id="login" type="button" class="btn btn-primary">登录</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+
+    <!-- Sign In Modal -->
+    <div class="modal fade" id="signInModal" tabindex="-1" aria-labelledby="signInModalLabel" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="signInModalLabel">注册界面</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <span id="signup_message"></span>
+            <form>
+              <div class="form-group">
+                <label for="username">用户名</label>
+                <input type="email" class="form-control" id="signup_username" placeholder="随便输入">
+                <label for="password">密码</label>
+                <input type="password" class="form-control" id="signup_password" placeholder="随便输入">
+              </div>
+            </form>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">关闭</button>
+            <button id="signup" type="button" class="btn btn-primary">注册</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Modal -->
+    <div class="modal fade" id="addFriendModal" tabindex="-1" role="dialog" aria-labelledby="addFriendModalLabel" aria-hidden="true">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="addFriendModalLabel">Modal title</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div id="search_friend_list" class="modal-body">
+
+          </div>
+          <div class="modal-footer">
+            <div class="form-inline">
+              <input id="search_friend_input" class="form-control mr-sm-2" type="search" placeholder="搜好友" aria-label="Search">
+            </div>
+            <button id="search_friend_button" class="btn btn-outline-success my-2 my-sm-0" type="button">Search</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+
+
+
+    <!-- 确认添加好友Modal -->
+    <div class="modal fade" id="friendRequestModal" tabindex="-1" role="dialog" aria-labelledby="friendRequestModalLabel" aria-hidden="true">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="friendRequestModalLabel">Modal title</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div id="friend_request_name" class="modal-body">
+          </div>
+          <div class="modal-footer">
+            <input id="request_uid" type="hidden" name="" value="">
+            <input id="request_email" type="hidden" name="" value="">
+            <button id="confirm_request" class="btn btn-outline-success my-2 my-sm-0" type="button">通过</button>
+            <button id="reject_request" class="btn btn-outline-success my-2 my-sm-0" type="button">拒绝</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      if(user){
+        document.write(`
+          <div class="container-fluid">
+            <div class="row">
+              <div class="col-4">
+                <div class="card" style="width: 18rem;">
+                  <div class="card-body">
+                    <h5 class="card-title">好友列表</h5>
+                  </div>
+                  <ul id="friend_list" class="list-group list-group-flush">
+                  </ul>
+                  <div class="card-body">
+                    <span class="badge badge-pill badge-info" data-toggle="modal" data-target="#addFriendModal">
+                      +
+                    </span>
+                  </div>
+                </div>
+              </div>
+              <div class="col-8">
+                <div id="message_box" class="card text-center hidden">
+                  <div id="message_name" class="card-header">
+
+                  </div>
+                  <div id="message" class="card-body d-flex flex-column">
+
+                  </div>
+
+                  <div class="card-footer text-muted">
+                    <div class="input-group mb-3">
+                      <input id="send_message" type="text" class="form-control" placeholder="发送消息" aria-label="Recipient's username" aria-describedby="basic-addon2">
+                      <div class="input-group-append">
+                        <button id="send" class="btn btn-outline-secondary" type="button">发送</button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                </div>
+            </div>
+          </div>`)
+      }
+    </script>
+
+
+
+    <!-- Optional JavaScript -->
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js" integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js" integrity="sha384-B4gt1jrGC7Jh4AgTPSdUtOBvfO8shuf57BaghqFfPlYxofvL8/KUEfYiJOMMV+rV" crossorigin="anonymous"></script>
+
+    <script defer src="https://www.gstatic.com/firebasejs/7.17.1/firebase-app.js"></script>
+    <script defer src="https://www.gstatic.com/firebasejs/7.17.1/firebase-auth.js"></script>
+    <script defer src="https://www.gstatic.com/firebasejs/7.17.1/firebase-firestore.js"></script>
+    <script defer src="https://www.gstatic.com/firebasejs/7.17.1/firebase-database.js"></script>
+    <script defer src="https://www.gstatic.com/firebasejs/7.17.1/firebase-analytics.js"></script>
+    <script defer src="./init-firebase.js"></script>
+    <script defer src="./index.js"></script>
+  </body>
+</html>
