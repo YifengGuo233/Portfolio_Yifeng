@@ -37,8 +37,9 @@ function friend_list_listener(user){
           if (change.type === "added") {
               localStorage.setItem(change.doc.data().uid, change.doc.data().email)
               var li = document.createElement("li")
-              li.setAttribute("class", "list-group-item")
+              li.setAttribute("class", "list-group-item p-0")
               var div = document.createElement("div")
+              div.setAttribute("class", "p-2")
               div.innerHTML = change.doc.data().email
               div.setAttribute("id", change.doc.data().uid)
               li.addEventListener("click", function(e){
@@ -151,38 +152,8 @@ function message_listener(uid){
                 message_div.appendChild(message_p)
                 messageBox.appendChild(message_div)
               }
+              messageBox.scrollTop = messageBox.scrollHeight - messageBox.clientHeight;
             }
-
-            // let currentUser = JSON.parse(user)
-            // let uid = currentUser.uid
-            // console.log(message);
-            // message_array = Object.values(message)
-            // console.log(message_array)
-            // console.log(uid)
-            // let filter = message_array.filter(e => e.receiverUID === uid && e.senderUID === currentTalkToUID ||e.receiverUID === currentTalkToUID && e.senderUID === uid)
-            // console.log(filter)
-
-
-            // console.log(message_object)
-            // console.log(currentUser.uid)
-              // if(message_object.senderUID == currentUser.uid){
-              //   var message_div = document.createElement("div")
-              //   var message_p = document.createElement("p")
-              //   message_div.setAttribute("class", "p-2 mb-2 bg-success text-white")
-              //   message_p.setAttribute("class", "float-right")
-              //   message_p.innerHTML = message_object.message
-              //   message_div.appendChild(message_p)
-              //   messageBox.appendChild(message_div)
-              // }
-              // else if(message_object.senderUID == currentTalkToUID){
-              //   var message_div = document.createElement("div")
-              //   var message_p = document.createElement("p")
-              //   message_div.setAttribute("class", "p-2 mb-2 bg-light text-dark")
-              //   message_p.setAttribute("class", "float-left")
-              //   message_p.innerHTML = message_object.message
-              //   message_div.appendChild(message_p)
-              //   messageBox.appendChild(message_div)
-              // }
             }
             if (change.type === "modified") {
                 console.log("Modified city: ", change.doc.data());
@@ -325,46 +296,7 @@ if(profileUI){
 let sendButton = document.getElementById("send")
 if(sendButton){
   sendButton.addEventListener("click", function(){
-    let currentUser = JSON.parse(user)
-    let currentUserUid = currentUser.uid
-    let currentUserEmail = currentUser.email
-    let message = document.getElementById("send_message").value
-    console.log(message)
-    document.getElementById("send_message").value = ""
-    document.getElementById("send_message").innerHTML = ""
-    console.log(currentUserUid)
-    console.log(currentTalkToUID)
-    db.collection("users").doc(currentUserUid)
-    .collection("chat").add({
-        message: message,
-        senderUID: currentUserUid,
-        senderEmail: currentUserEmail,
-        seen: true,
-        receiverUID: currentTalkToUID
-    })
-    .then(function(){
-        console.log("Document successfully written!");
-    })
-    .catch(function(error) {
-        console.error("Error writing document: ", error);
-    });
-
-    db.collection("users").doc(currentTalkToUID)
-    .collection("chat").add({
-        message: message,
-        senderUID: currentUserUid,
-        senderEmail: currentUserEmail,
-        seen: true,
-        receiverUID: currentTalkToUID
-    })
-    .then(function(){
-        console.log("Document successfully written!");
-    })
-    .catch(function(error) {
-        console.error("Error writing document: ", error);
-    });
-
-
+    sendMessage()
   });
 }
 
@@ -455,7 +387,6 @@ if(rejectRequestButton){
   });
 }
 
-
 function updateMessageBox(){
   console.log(currentTalkToUID)
   let messageBox = document.getElementById("message");
@@ -489,6 +420,57 @@ function updateMessageBox(){
       messageBox.appendChild(message_div)
     }
   });
+  messageBox.scrollTop = messageBox.scrollHeight - messageBox.clientHeight;
+}
 
 
+document.getElementById("send_message").addEventListener('keypress', function (e) {
+    if (e.key === 'Enter') {
+      sendMessage()
+    }
+});
+
+
+
+
+//发送消息
+function sendMessage(){
+  let currentUser = JSON.parse(user)
+  let currentUserUid = currentUser.uid
+  let currentUserEmail = currentUser.email
+  let message = document.getElementById("send_message").value
+  console.log(message)
+  document.getElementById("send_message").value = ""
+  document.getElementById("send_message").innerHTML = ""
+  console.log(currentUserUid)
+  console.log(currentTalkToUID)
+  db.collection("users").doc(currentUserUid)
+  .collection("chat").add({
+      message: message,
+      senderUID: currentUserUid,
+      senderEmail: currentUserEmail,
+      seen: true,
+      receiverUID: currentTalkToUID
+  })
+  .then(function(){
+      console.log("Document successfully written!");
+  })
+  .catch(function(error) {
+      console.error("Error writing document: ", error);
+  });
+
+  db.collection("users").doc(currentTalkToUID)
+  .collection("chat").add({
+      message: message,
+      senderUID: currentUserUid,
+      senderEmail: currentUserEmail,
+      seen: true,
+      receiverUID: currentTalkToUID
+  })
+  .then(function(){
+      console.log("Document successfully written!");
+  })
+  .catch(function(error) {
+      console.error("Error writing document: ", error);
+  });
 }

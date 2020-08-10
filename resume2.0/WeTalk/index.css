@@ -3,3 +3,8 @@
 .display-inline {display: inline;}
 .display-block {display: block;}
 .pointer{cursor:pointer}
+.scroll{overflow: scroll}
+#message{
+  height:400px;
+  overflow:scroll;
+}
