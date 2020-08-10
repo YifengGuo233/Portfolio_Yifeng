@@ -48,6 +48,7 @@ function friend_list_listener(user){
                 currentTalkToEmail = localStorage.getItem(id)
                 $("#message_box").show()
                 document.getElementById("message_name").innerHTML = currentTalkToEmail
+                updateMessageBox()
               })
               li.appendChild(div)
               friend_list.appendChild(li)
@@ -105,7 +106,7 @@ function friend_request_listener(user){
 function message_listener(uid){
   console.log(uid);
   let currentUser = JSON.parse(user)
-  let message = document.getElementById("message");
+  let messageBox = document.getElementById("message");
   // console.log(friend_uid)
   db.collection("users/"+uid+"/chat/")
     .onSnapshot(function(querySnapshot) {
@@ -113,9 +114,25 @@ function message_listener(uid){
         querySnapshot.docChanges().forEach(function(change) {
           //console.log(change.doc.data())
           if (change.type === "added") {
+
+            if (localStorage.getItem("message") === null) {
+              let temp = {}
+              localStorage.setItem("message", JSON.stringify(temp))
+              console.log(localStorage.getItem("message"));
+            }
+            //localStorage.setItem("message",)
+            let message = JSON.parse(localStorage.getItem("message"))
             let message_object = change.doc.data()
+            let message_id = change.doc.id
+            message[message_id] = message_object
+            localStorage.setItem("message", JSON.stringify(message))
+            message = JSON.parse(localStorage.getItem("message"))
             console.log(message_object)
-            console.log(currentUser.uid)
+            //实时更新
+            if(
+              (message_object.receiverUID == currentUser.uid && message_object.senderUID == currentTalkToUID)
+              ||(message_object.receiverUID == currentTalkToUID && message_object.senderUID == currentUser.uid))
+            {
               if(message_object.senderUID == currentUser.uid){
                 var message_div = document.createElement("div")
                 var message_p = document.createElement("p")
@@ -123,7 +140,7 @@ function message_listener(uid){
                 message_p.setAttribute("class", "float-right")
                 message_p.innerHTML = message_object.message
                 message_div.appendChild(message_p)
-                message.appendChild(message_div)
+                messageBox.appendChild(message_div)
               }
               else if(message_object.senderUID == currentTalkToUID){
                 var message_div = document.createElement("div")
@@ -132,8 +149,40 @@ function message_listener(uid){
                 message_p.setAttribute("class", "float-left")
                 message_p.innerHTML = message_object.message
                 message_div.appendChild(message_p)
-                message.appendChild(message_div)
+                messageBox.appendChild(message_div)
               }
+            }
+
+            // let currentUser = JSON.parse(user)
+            // let uid = currentUser.uid
+            // console.log(message);
+            // message_array = Object.values(message)
+            // console.log(message_array)
+            // console.log(uid)
+            // let filter = message_array.filter(e => e.receiverUID === uid && e.senderUID === currentTalkToUID ||e.receiverUID === currentTalkToUID && e.senderUID === uid)
+            // console.log(filter)
+
+
+            // console.log(message_object)
+            // console.log(currentUser.uid)
+              // if(message_object.senderUID == currentUser.uid){
+              //   var message_div = document.createElement("div")
+              //   var message_p = document.createElement("p")
+              //   message_div.setAttribute("class", "p-2 mb-2 bg-success text-white")
+              //   message_p.setAttribute("class", "float-right")
+              //   message_p.innerHTML = message_object.message
+              //   message_div.appendChild(message_p)
+              //   messageBox.appendChild(message_div)
+              // }
+              // else if(message_object.senderUID == currentTalkToUID){
+              //   var message_div = document.createElement("div")
+              //   var message_p = document.createElement("p")
+              //   message_div.setAttribute("class", "p-2 mb-2 bg-light text-dark")
+              //   message_p.setAttribute("class", "float-left")
+              //   message_p.innerHTML = message_object.message
+              //   message_div.appendChild(message_p)
+              //   messageBox.appendChild(message_div)
+              // }
             }
             if (change.type === "modified") {
                 console.log("Modified city: ", change.doc.data());
@@ -289,7 +338,9 @@ if(sendButton){
     .collection("chat").add({
         message: message,
         senderUID: currentUserUid,
-        senderEmail: currentUserEmail
+        senderEmail: currentUserEmail,
+        seen: true,
+        receiverUID: currentTalkToUID
     })
     .then(function(){
         console.log("Document successfully written!");
@@ -302,7 +353,9 @@ if(sendButton){
     .collection("chat").add({
         message: message,
         senderUID: currentUserUid,
-        senderEmail: currentUserEmail
+        senderEmail: currentUserEmail,
+        seen: true,
+        receiverUID: currentTalkToUID
     })
     .then(function(){
         console.log("Document successfully written!");
@@ -400,4 +453,42 @@ if(rejectRequestButton){
           console.error("Error removing document: ", error);
       });
   });
+}
+
+
+function updateMessageBox(){
+  console.log(currentTalkToUID)
+  let messageBox = document.getElementById("message");
+  messageBox.innerHTML = ""
+  let message = JSON.parse(localStorage.getItem("message"))
+  let currentUser = JSON.parse(user)
+  let uid = currentUser.uid
+  console.log(message);
+  message_array = Object.values(message)
+  console.log(message_array)
+  console.log(uid)
+  let filter = message_array.filter(e => e.receiverUID === uid && e.senderUID === currentTalkToUID ||e.receiverUID === currentTalkToUID && e.senderUID === uid)
+  console.log(filter)
+  filter.forEach((message_object) => {
+    if(message_object.senderUID == currentUser.uid){
+      var message_div = document.createElement("div")
+      var message_p = document.createElement("p")
+      message_div.setAttribute("class", "p-2 mb-2 bg-success text-white")
+      message_p.setAttribute("class", "float-right")
+      message_p.innerHTML = message_object.message
+      message_div.appendChild(message_p)
+      messageBox.appendChild(message_div)
+    }
+    else if(message_object.senderUID == currentTalkToUID){
+      var message_div = document.createElement("div")
+      var message_p = document.createElement("p")
+      message_div.setAttribute("class", "p-2 mb-2 bg-light text-dark")
+      message_p.setAttribute("class", "float-left")
+      message_p.innerHTML = message_object.message
+      message_div.appendChild(message_p)
+      messageBox.appendChild(message_div)
+    }
+  });
+
+
 }
