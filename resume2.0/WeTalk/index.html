@@ -184,9 +184,10 @@
 
                   <div class="card-footer text-muted">
                     <div class="input-group mb-3">
+                      <button onclick="VideoChat()" id="video_chat" class="btn btn-outline-secondary" type="button">视频聊天</button>
                       <input id="send_message" type="text" class="form-control" placeholder="发送消息" aria-label="Recipient's username" aria-describedby="basic-addon2">
                       <div class="input-group-append">
-                        <button id="send" class="btn btn-outline-secondary" type="button">发送</button>
+                        <button onclick="sendMessage()" id="send" class="btn btn-outline-secondary" type="button">发送</button>
                       </div>
                     </div>
                   </div>
@@ -196,7 +197,6 @@
           </div>`)
       }
     </script>
-
 
 
     <!-- Optional JavaScript -->

@@ -48,11 +48,7 @@ function friend_list_listener(user){
                 currentTalkToUID = id
                 currentTalkToEmail = localStorage.getItem(id)
                 $("#message_box").show()
-                document.getElementById("send_message").addEventListener('keypress', function (e) {
-                    if (e.key === 'Enter') {
-                      sendMessage()
-                    }
-                });
+
                 document.getElementById("message_name").innerHTML = currentTalkToEmail
                 updateMessageBox()
               })
@@ -298,12 +294,6 @@ if(profileUI){
   });
 }
 
-let sendButton = document.getElementById("send")
-if(sendButton){
-  sendButton.addEventListener("click", function(){
-  sendMessage()
-  });
-}
 
 let searchButton = document.getElementById("search_friend_button")
 if(searchButton){
@@ -429,11 +419,14 @@ function updateMessageBox(){
 }
 
 
-
-
-
-
-
+let sendMessageButton = document.getElementById("send_message")
+if(sendMessageButton){
+  sendMessageButton.addEventListener('keypress', function (e) {
+      if (e.key === 'Enter') {
+        sendMessage()
+      }
+  });
+}
 
 //发送消息
 function sendMessage(){
@@ -471,6 +464,24 @@ function sendMessage(){
   })
   .then(function(){
       console.log("Document successfully written!");
+  })
+  .catch(function(error) {
+      console.error("Error writing document: ", error);
+  });
+}
+
+function VideoChat(){
+  let currentUser = JSON.parse(user)
+  let currentUserUid = currentUser.uid
+  db.collection("video_chats").add({
+      from: currentUserUid,
+      to: currentTalkToUID,
+      end: false
+  })
+  .then(function(docRef){
+      console.log(docRef.id)
+      console.log("Document successfully written!");
+      window.location = "http://localhost:3000/room/" + docRef.id
   })
   .catch(function(error) {
       console.error("Error writing document: ", error);
