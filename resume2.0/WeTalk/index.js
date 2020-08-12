@@ -48,6 +48,11 @@ function friend_list_listener(user){
                 currentTalkToUID = id
                 currentTalkToEmail = localStorage.getItem(id)
                 $("#message_box").show()
+                document.getElementById("send_message").addEventListener('keypress', function (e) {
+                    if (e.key === 'Enter') {
+                      sendMessage()
+                    }
+                });
                 document.getElementById("message_name").innerHTML = currentTalkToEmail
                 updateMessageBox()
               })
@@ -296,7 +301,7 @@ if(profileUI){
 let sendButton = document.getElementById("send")
 if(sendButton){
   sendButton.addEventListener("click", function(){
-    sendMessage()
+  sendMessage()
   });
 }
 
@@ -424,11 +429,8 @@ function updateMessageBox(){
 }
 
 
-document.getElementById("send_message").addEventListener('keypress', function (e) {
-    if (e.key === 'Enter') {
-      sendMessage()
-    }
-});
+
+
 
 
 
