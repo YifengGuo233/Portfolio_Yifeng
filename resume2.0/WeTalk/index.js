@@ -473,9 +473,8 @@ function sendMessage(){
 function VideoChat(){
   let currentUser = JSON.parse(user)
   let currentUserUid = currentUser.uid
-  db.collection("video_chats").add({
-      from: currentUserUid,
-      to: currentTalkToUID,
+  db.collection("users").doc(currentUserUid)
+  .collection(currentTalkToUID).add({
       end: false
   })
   .then(function(docRef){
