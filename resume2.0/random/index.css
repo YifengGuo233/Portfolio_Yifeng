@@ -1,0 +1,12 @@
+.grid_container{
+  display: grid;
+  grid-template-columns: auto auto auto auto auto auto auto auto;
+  background-color: grey;
+  padding: 10px;
+}
+.grid_item{
+  background-color: lightgrey;
+  padding: 10px;
+  border-width: medium;
+  border: solid;
+}
