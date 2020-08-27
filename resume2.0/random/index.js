@@ -100,74 +100,74 @@ function checkGame(){
   for(i = 1; i <= 8; i++){
     if(document.getElementById("A"+i).value){
       let rowA = document.getElementById("A"+i).value
-      document.getElementById("A"+i).innerHTML = rowA.symbol
+      document.getElementById("A"+i).textContent = rowA.symbol
       document.getElementById("A"+i).style.background = rowA.color
     }
     else{
-        document.getElementById("A"+i).innerHTML = ""
+        document.getElementById("A"+i).textContent = ""
         document.getElementById("A"+i).style.background = "lightgrey"
     }
     if(document.getElementById("B"+i).value){
       let rowB = document.getElementById("B"+i).value
-      document.getElementById("B"+i).innerHTML = rowB.symbol
+      document.getElementById("B"+i).textContent = rowB.symbol
       document.getElementById("B"+i).style.background = rowB.color
     }
     else{
-        document.getElementById("B"+i).innerHTML = ""
+        document.getElementById("B"+i).textContent = ""
         document.getElementById("B"+i).style.background = "lightgrey"
     }
     if(document.getElementById("C"+i).value){
       let rowC = document.getElementById("C"+i).value
-      document.getElementById("C"+i).innerHTML = rowC.symbol
+      document.getElementById("C"+i).textContent = rowC.symbol
       document.getElementById("C"+i).style.background = rowC.color
     }
     else{
-        document.getElementById("C"+i).innerHTML = ""
+        document.getElementById("C"+i).textContent = ""
         document.getElementById("C"+i).style.background = "lightgrey"
     }
     if(document.getElementById("D"+i).value){
       let rowD = document.getElementById("D"+i).value
-      document.getElementById("D"+i).innerHTML = rowD.symbol
+      document.getElementById("D"+i).textContent = rowD.symbol
       document.getElementById("D"+i).style.background = rowD.color
     }
     else{
-        document.getElementById("D"+i).innerHTML = ""
+        document.getElementById("D"+i).textContent = ""
         document.getElementById("D"+i).style.background = "lightgrey"
     }
     if(document.getElementById("E"+i).value){
       let rowE = document.getElementById("E"+i).value
-      document.getElementById("E"+i).innerHTML = rowE.symbol
+      document.getElementById("E"+i).textContent = rowE.symbol
       document.getElementById("E"+i).style.background = rowE.color
     }
     else{
-        document.getElementById("E"+i).innerHTML = ""
+        document.getElementById("E"+i).textContent = ""
         document.getElementById("E"+i).style.background = "lightgrey"
     }
     if(document.getElementById("F"+i).value){
       let rowF = document.getElementById("F"+i).value
-      document.getElementById("F"+i).innerHTML = rowF.symbol
+      document.getElementById("F"+i).textContent = rowF.symbol
       document.getElementById("F"+i).style.background = rowF.color
     }
     else{
-        document.getElementById("F"+i).innerHTML = ""
+        document.getElementById("F"+i).textContent = ""
         document.getElementById("F"+i).style.background = "lightgrey"
     }
     if(document.getElementById("G"+i).value){
       let rowG = document.getElementById("G"+i).value
-      document.getElementById("G"+i).innerHTML = rowG.symbol
+      document.getElementById("G"+i).textContent = rowG.symbol
       document.getElementById("G"+i).style.background = rowG.color
     }
     else{
-        document.getElementById("G"+i).innerHTML = ""
+        document.getElementById("G"+i).textContent = ""
         document.getElementById("G"+i).style.background = "lightgrey"
     }
     if(document.getElementById("H"+i).value){
       let rowH = document.getElementById("H"+i).value
-      document.getElementById("H"+i).innerHTML = rowH.symbol
+      document.getElementById("H"+i).textContent = rowH.symbol
       document.getElementById("H"+i).style.background = rowH.color
     }
     else{
-        document.getElementById("H"+i).innerHTML = ""
+        document.getElementById("H"+i).textContent = ""
         document.getElementById("H"+i).style.background = "lightgrey"
     }
   }
@@ -186,18 +186,23 @@ function addListener(){
 }
 
 function clickCheck(e){
+
+  //checkGame()
   if(CurrentlySelected){
+    console.log("当前选中...")
     console.log(CurrentlySelected)
+    //如果这个选中的东西有值
     if(e.target.value){
-      if(CurrentlySelected.value.id != e.target.value.id){
+      //并且不是一样的id
+      if(CurrentlySelected.value.id != e.target.value.id)
+      {
+        //选择的是自己阵营的
         if(CurrentlySelected.value.player == e.target.value.player){
-          //Change Selected Chess
           CurrentlySelected = e.target
+          checkGame()
           CurrentlySelected.style.background = "Green"
-          console.log(CurrentlySelected);
-          //Need to check move is valid or not
-          moveCheck()
         }
+        //不是自己阵营的代表攻击
         else{
           //Attack Another Player's Chess
           console.log("attack")
@@ -214,17 +219,22 @@ function clickCheck(e){
           CurrentlySelected = null
         }
       }
+      //选了同一样东西
+      else{
+        console.log("选了同一个东西")
+      }
     }
+    //如果选中的东西没值，代表是空格
     else{
       console.log("move")
       //Need to check move is valid or not
       let result = moveCheck(e.target.id)
-      CurrentlySelected.style.background = "lightgrey"
-      console.log(CurrentlySelected.value)
       if(result){
+        CurrentlySelected.style.background = "lightgrey"
         e.target.value = CurrentlySelected.value
         CurrentlySelected.value = null
         CurrentlySelected = null;
+        checkGame()
       }
       else{
         //Not Valid Move
@@ -232,11 +242,12 @@ function clickCheck(e){
       }
     }
   }
+  //如果没有选过
   else{
     if(e.target.value){
       if(e.target.value.id != null){
+        console.log("第一次选")
         CurrentlySelected = e.target
-        console.log(CurrentlySelected);
         CurrentlySelected.style.background = "Green"
       }
     }
@@ -244,13 +255,14 @@ function clickCheck(e){
       console.log("It's a empty space");
     }
   }
-  checkGame()
+
 }
 
 function moveCheck(targetId){
   console.log(CurrentlySelected.id)
   console.log(targetId)
   if(CurrentlySelected.value.name == "Pawn"){
+    //Pawn只可以竖着走，所以需要检查他们的竖坐标
     if(targetId[0] == CurrentlySelected.id[0]){
       if(CurrentlySelected.value.player == "W"){
         if(targetId[1] - CurrentlySelected.id[1] == 1){
@@ -264,12 +276,42 @@ function moveCheck(targetId){
             return true
         }
       }
-
     }
     else{
       return false
     }
   }
+  if(CurrentlySelected.value.name == "Rock"){
+    if(targetId[0] == CurrentlySelected.id[0]){
+      //需要检查前方有没有障碍
+      console.log("竖着走");
+      let targetcol = targetId[0]
+      let targetrow = targetId[1]
+      let sourcerow = CurrentlySelected.id[1]
+      for(i = 1; i <= targetrow; i++){
+        console.log(i)
+        console.log(sourcerow)
+        if(i != sourcerow){
+          let value = document.getElementById(targetcol+i).value
+          console.log(value);
+          if(value){
+            return false
+          }
+        }
+      }
+      return true
+    }
+    else if (targetId[1] == CurrentlySelected.id[1]) {
+
+      let col = targetId[0]
+      let row = targetId[1]
+      console.log("A".charCodeAt(0))
+
+    }
+  }
+
+
+
 }
 startGame()
 checkGame()
